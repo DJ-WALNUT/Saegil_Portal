@@ -11,8 +11,13 @@
 {% endblock %}
 
 {% block content %}
-<div class="container setting-container" style="max-width: 1500px;">
-    <h1>전체 대여 기록</h1>
+<div class="container setting-container">
+    <div class="page-header">
+        <h1>전체 대여 기록</h1>
+    </div>
+    <p>
+        최신순, 내림차순 정렬입니다.
+    </p>
     <a href="{{ url_for('download_log_file') }}" class="btn-primary download-btn">대여 기록 엑셀 파일 다운로드 💾</a>
     
     <div class="table-container">
@@ -25,7 +30,7 @@
                     <th>대여물품</th>
                     <th>대여담당자</th>
                     <th>대여시각</th>
-                    <th>반납여부</th>
+                    <th>대여현황</th>
                     <th>반납담당자</th>
                     <th>반납시각</th>
                 </tr>
@@ -39,7 +44,7 @@
                     <td>{{ log['대여물품'] }}</td>
                     <td>{{ log['대여담당자'] }}</td>
                     <td>{{ log['대여시각'] }}</td>
-                    <td>{{ log['반납여부'] }}</td>
+                    <td>{{ log['대여현황'] }}</td>
                     <td>{{ log['반납담당자'] }}</td>
                     <td>{{ log['반납시각'] }}</td>
                 </tr>

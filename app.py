@@ -18,7 +18,7 @@ app.secret_key = 'saegil-portal-secret-key-!@#$'
 DATA_DIR = 'data'
 STOCK_FILE = os.path.join(DATA_DIR, 'stuff_ongoing.xlsx')
 LOG_FILE = os.path.join(DATA_DIR, 'borrow_log.xlsx')
-DEPARTMENTS = ['컴퓨터공학과', '전자공학과', '기계공학과', '화학공학과', '신소재공학과']
+MAJOR_FILE = os.path.join(DATA_DIR, 'major.xlsx')
 AUTH_CODE = '0924'
 ADMIN_PASSWORD = 'saegil0924'
 
@@ -34,7 +34,7 @@ def save_stock(df):
 
 def load_log():
     # 새 양식의 컬럼 정의
-    log_columns = ['이름', '전화번호', '학번', '학과', '대여물품', '대여담당자', '대여시각', '반납여부', '반납담당자', '반납시각']
+    log_columns = ['이름', '전화번호', '학번', '학과', '대여물품', '대여담당자', '대여시각', '대여현황', '반납담당자', '반납시각']
     if not os.path.exists(LOG_FILE):
         df = pd.DataFrame(columns=log_columns)
         df.to_excel(LOG_FILE, index=False)
@@ -48,6 +48,21 @@ def load_log():
             df[col] = ''
     return df
 
+def save_log(df):
+    df = load_log()
+    new_df = pd.concat([df, pd.DataFrame([df])], ignore_index=True)
+    new_df.to_excel(LOG_FILE, index=False)
+
+def load_majors(): # 학과 목록을 불러오는 함수 새로 추가
+    """학과 엑셀 파일을 읽어 리스트로 반환합니다."""
+    if not os.path.exists(MAJOR_FILE):
+        # 파일이 없으면 기본값으로 비어있는 데이터프레임 생성
+        df = pd.DataFrame({'학과명': []})
+        df.to_excel(MAJOR_FILE, index=False)
+    
+    df = pd.read_excel(MAJOR_FILE)
+    # '학과명' 컬럼의 모든 값을 리스트로 변환하여 반환
+    return df['학과명'].tolist()
 
 def add_log_entry(entry):
     df = load_log()
@@ -77,69 +92,82 @@ def index():
 def borrow_main():
     stock_df = load_stock()
     available_items = stock_df[stock_df['재고현황'] >= -1] # -1, 0, 있음 모두 표시
-    return render_template('borrow_main.html', items=available_items.to_dict('records'), departments=DEPARTMENTS)
+    majors = load_majors()
+    
+    return render_template('borrow_main.html', items=available_items.to_dict('records'), departments=majors)
 
-@app.route('/borrow', methods=['POST'])
-def borrow_process():
+@app.route('/borrow/request', methods=['POST'])
+def borrow_request():
     name = request.form.get('name')
     student_id = request.form.get('student_id')
     department = request.form.get('department')
     phone = request.form.get('phone')
-    auth_code = request.form.get('auth_code')
-    handler_name = request.form.get('handler_name') # 대여 담당자 이름 추가
     selected_items_str = request.form.get('selected_items')
 
-    if not all([name, student_id, department, phone, auth_code, handler_name, selected_items_str]):
+    if not all([name, student_id, department, phone, selected_items_str]):
         flash('모든 항목을 올바르게 입력해주세요.')
         return redirect(url_for('borrow_main'))
 
-    if auth_code != AUTH_CODE:
-        flash('인증번호가 일치하지 않습니다.')
-        return redirect(url_for('borrow_main'))
-
     selected_items = selected_items_str.split(',')
-    stock_df = load_stock()
-
-    for item_name in selected_items:
-        item_index = stock_df.index[stock_df['물품'] == item_name].tolist()
-        if item_index:
-            idx = item_index[0]
-            current_stock = stock_df.loc[idx, '재고현황']
-            if current_stock > 0:
-                stock_df.loc[idx, '재고현황'] -= 1
-    save_stock(stock_df)
-
-    # 로그 기록 (새 양식에 맞춰 수정)
+    log_df = load_log()
     log_entry = {
-        '이름': name,
-        '전화번호': phone,
-        '학번': student_id,
-        '학과': department,
+        '이름': name, '전화번호': phone, '학번': student_id, '학과': department,
         '대여물품': ', '.join(selected_items),
-        '대여담당자': handler_name,
+        '대여담당자': '',
         '대여시각': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-        '반납여부': 'X', # 대여 시 'X'로 초기화
-        '반납담당자': '',
-        '반납시각': ''
+        '대여현황': '신청', # ✨ 상태를 '신청'으로 저장
+        '반납담당자': '', '반납시각': ''
     }
-    add_log_entry(log_entry)
-
-    session['borrowed_items'] = selected_items
+    new_log_df = pd.concat([log_df, pd.DataFrame([log_entry])], ignore_index=True)
+    save_log(new_log_df)
+    session['requested_items'] = selected_items
+    
     return redirect(url_for('success_page'))
 
+def save_log(df):
+    df.to_excel(LOG_FILE, index=False)
+
 @app.route('/success')
-def success_page():
-    borrowed_items = session.pop('borrowed_items', [])
-    if not borrowed_items:
+def success_page():    
+    requested_items = session.pop('requested_items', [])
+    if not requested_items:
         return redirect(url_for('borrow_main'))
     
     borrow_date = datetime.now().strftime('%Y-%m-%d')
     return_date = (datetime.now() + timedelta(days=7)).strftime('%Y-%m-%d')
     
     return render_template('borrow_success.html', 
-                           items=borrowed_items, 
+                           items=requested_items, 
                            borrow_date=borrow_date, 
                            return_date=return_date)
+
+@app.route('/check', methods=['GET', 'POST'])
+def check_rental_status():
+    if request.method == 'POST':
+        name = request.form.get('name')
+        student_id = request.form.get('student_id')
+        
+        log_df = load_log()
+        # 학번을 문자열로 변환하여 비교 (엑셀에서 숫자로 읽힐 수 있음)
+        log_df['학번'] = log_df['학번'].astype(str)
+        
+        results = log_df[(log_df['이름'] == name) & (log_df['학번'] == student_id)]
+        
+        if not results.empty:
+            user_info = results.iloc[0].to_dict()
+            records = results.sort_values(by='대여시각', ascending=False).to_dict('records')
+            # 반납기한 계산 (대여시각이 문자열이므로 datetime으로 변환 필요)
+            for record in records:
+                if record.get('대여현황') == '미반납' and record.get('대여시각'):
+                    borrow_time = datetime.strptime(record['대여시각'], '%Y-%m-%d %H:%M:%S')
+                    record['반납기한'] = (borrow_time + timedelta(days=7)).strftime('%Y-%m-%d')
+                else:
+                    record['반납기한'] = '-'
+            return render_template('borrow_check.html', user_info=user_info, records=records)
+        else:
+            return render_template('borrow_check.html', no_records=True, search_name=name)
+            
+    return render_template('borrow_check.html')
 
 
 # --- 관리자 페이지 라우트 ---
@@ -147,8 +175,7 @@ def success_page():
 @app.route('/setting', methods=['GET', 'POST'])
 def setting_login():
     if request.method == 'POST':
-        password = request.form.get('password')
-        if password == ADMIN_PASSWORD:
+        if request.form.get('password') == ADMIN_PASSWORD:
             session['logged_in'] = True
             return redirect(url_for('setting_main'))
         else:
@@ -219,58 +246,121 @@ def setting_log():
     logs = log_df.sort_values(by='대여시각', ascending=False).to_dict('records')
     return render_template('setting_log.html', logs=logs)
 
-# --- 신규/수정된 반납 관련 라우트 ---
-@app.route('/setting/return')
-def setting_return():
-    """반납 현황 페이지 (미반납 건만 표시)"""
-    if not session.get('logged_in'):
-        return redirect(url_for('setting_login'))
+# ✨ 신규: 대여 수락 관리 페이지
+@app.route('/setting/approve', methods=['GET', 'POST'])
+def setting_approve():
+    if not session.get('logged_in'): return redirect(url_for('setting_login'))
+    
+    log_df = load_log()
+    requests_df = log_df[log_df['대여현황'] == '신청'].copy()
+    
+    search_name = request.form.get('search_name', '')
+    if search_name:
+        requests_df = requests_df[requests_df['이름'].str.contains(search_name, na=False)]
+        
+    requests = requests_df.sort_values(by='대여시각', ascending=False).reset_index().to_dict('records')
+    return render_template('setting_approve.html', items=requests, search_name=search_name)
+
+# ✨ 신규: 대여 수락 처리
+@app.route('/setting/process_approval', methods=['POST'])
+def process_approval():
+    if not session.get('logged_in'): return redirect(url_for('setting_login'))
+
+    log_index = int(request.form.get('log_index'))
+    handler_name = request.form.get('handler_name')
 
     log_df = load_log()
-    # '반납여부'가 'X'인 데이터만 필터링
-    unreturned_df = log_df[log_df['반납여부'] == 'X'].copy()
-    # 인덱스를 함께 전달하여 각 항목을 고유하게 식별
-    unreturned_items = unreturned_df.reset_index().to_dict('records')
+    stock_df = load_stock()
 
-    return render_template('setting_return.html', items=unreturned_items)
+    if log_index < len(log_df) and handler_name:
+        items_to_borrow = log_df.loc[log_index, '대여물품'].split(', ')
+        
+        # 재고 확인
+        can_borrow = True
+        for item_name in items_to_borrow:
+            stock_row = stock_df[stock_df['물품'] == item_name]
+            if not stock_row.empty and stock_row.iloc[0]['재고현황'] <= 0:
+                flash(f"'{item_name}'의 재고가 부족하여 대여를 수락할 수 없습니다.")
+                can_borrow = False
+                break
+        
+        if can_borrow:
+            # 재고 차감
+            for item_name in items_to_borrow:
+                stock_idx = stock_df.index[stock_df['물품'] == item_name].tolist()[0]
+                stock_df.loc[stock_idx, '재고현황'] -= 1
+            save_stock(stock_df)
 
+            # 로그 업데이트
+            log_df.loc[log_index, '대여현황'] = '미반납'
+            log_df.loc[log_index, '대여담당자'] = handler_name
+            log_df.loc[log_index, '대여시각'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            save_log(log_df)
+            flash('대여 신청을 수락했습니다.')
+        
+    return redirect(url_for('setting_approve'))
+
+# ✨ 신규: 대여 신청 초기화
+@app.route('/setting/reset_requests', methods=['POST'])
+def reset_requests():
+    if not session.get('logged_in'): return redirect(url_for('setting_login'))
+    
+    log_df = load_log()
+    # '신청' 상태가 아닌 기록만 남김
+    remaining_logs = log_df[log_df['대여현황'] != '신청']
+    save_log(remaining_logs)
+    flash('대기 중인 모든 대여 신청을 초기화했습니다.')
+    return redirect(url_for('setting_approve'))
+
+# ✨ 수정: 반납 현황 페이지에 검색 기능 추가
+@app.route('/setting/return', methods=['GET', 'POST'])
+def setting_return():
+    if not session.get('logged_in'): return redirect(url_for('setting_login'))
+    
+    log_df = load_log()
+    unreturned_df = log_df[log_df['대여현황'] == '미반납'].copy()
+    
+    search_name = request.form.get('search_name', '')
+    if search_name:
+        unreturned_df = unreturned_df[unreturned_df['이름'].str.contains(search_name, na=False)]
+        
+    unreturned_items = unreturned_df.sort_values(by='대여시각', ascending=False).reset_index().to_dict('records')
+    return render_template('setting_return.html', items=unreturned_items, search_name=search_name)
+
+# ✨ 수정: 반납 처리 로직
 @app.route('/setting/process_return', methods=['POST'])
 def process_return():
-    # 반납 처리 로직
-    if not session.get('logged_in'):
-        return redirect(url_for('setting_login'))
+    if not session.get('logged_in'): return redirect(url_for('setting_login'))
 
     log_index = int(request.form.get('log_index'))
     handler_name = request.form.get('return_handler_name')
-
+    
     if handler_name:
         log_df = load_log()
-        # 전달받은 인덱스로 해당 대여 건을 찾아 정보 업데이트
+        
         if log_index < len(log_df):
-            log_df.loc[log_index, '반납여부'] = 'O'
+            stock_df = load_stock()
+            
+            items_returned_str = log_df.loc[log_index, '대여물품']
+            items_returned_list = items_returned_str.split(', ')
+            
+            for item_name in items_returned_list:
+                item_indices = stock_df.index[stock_df['물품'] == item_name].tolist()
+                if item_indices:
+                    stock_idx = item_indices[0]
+                    # 재고가 -1(확인중)이 아닌 경우에만 수량을 1 늘립니다.
+                    if stock_df.loc[stock_idx, '재고현황'] != -1:
+                        stock_df.loc[stock_idx, '재고현황'] += 1
+
+            save_stock(stock_df)
+
+            log_df.loc[log_index, '대여현황'] = '반납완료'
             log_df.loc[log_index, '반납담당자'] = handler_name
             log_df.loc[log_index, '반납시각'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-
-            selected_items = [x.strip() for x in log_df.loc[log_index, '대여물품'].split(',')]
-            stock_df = load_stock()
-
-            for item_name in selected_items:
-                item_index = stock_df.index[stock_df['물품'] == item_name].tolist()
-                if item_index:
-                    idx = item_index[0]
-                    current_stock = stock_df.loc[idx, '재고현황']
-                    if current_stock >= 0: # -1은 그대로 -1, 0 이상은 올리기
-                        stock_df.loc[idx, '재고현황'] += 1
-            save_stock(stock_df)
-                
-            # 엑셀 파일 저장
-            log_df.to_excel(LOG_FILE, index=False)
-            flash('반납 처리가 완료되었습니다.')
-                
-        else:
-            flash('잘못된 요청입니다.')
-    else:
-        flash('반납 담당자 이름을 입력해주세요.')
+            save_log(log_df)
+            
+            flash('반납 처리가 완료되었고, 재고가 업데이트되었습니다.')
+            
     return redirect(url_for('setting_return'))
 
 @app.route('/download/log')

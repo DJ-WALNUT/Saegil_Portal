@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}대여 수락 관리 | 새길 포털{% endblock %}
+{% block head %}{{ super() }}<link rel="stylesheet" href="{{ url_for('static', filename='css/setting.css') }}">{% endblock %}
+{% block header %}{% include "components/header_setting.html" %}{% endblock %}
+
+{% block content %}
+<div class="container setting-container">
+    <div class="page-header">
+        <h1>대여 신청 수락</h1>
+        <form action="{{ url_for('reset_requests') }}" method="post" onsubmit="return confirm('대기 중인 모든 신청을 정말로 초기화하시겠습니까?');">
+            <button type="submit" class="btn-danger">신청목록 초기화</button>
+        </form>
+    </div>
+    <p>
+        사용자가 신청한 대여 건 목록입니다. '대여 처리' 버튼을 눌러 승인할 수 있습니다.
+        <br>최신순, 내림차순 정렬입니다.
+    </p>
+    
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="flash-message success">{{ messages[0] }}</div>
+        {% endif %}
+    {% endwith %}
+
+    <form class="search-form" method="post">
+        <input type="text" name="search_name" placeholder="이름으로 검색" value="{{ search_name or '' }}">
+        <button type="submit">검색</button>
+    </form>
+    
+    <div class="table-container">
+        <table>
+            <thead><tr><th>이름</th><th>전화번호</th><th>학번</th><th>학과</th><th>대여물품</th><th>처리</th></tr></thead>
+            <tbody>
+                {% for item in items %}
+                <tr>
+                    <td>{{ item['이름'] }}</td><td>{{ item['전화번호'] }}</td><td>{{ item['학번'] }}</td><td>{{ item['학과'] }}</td><td>{{ item['대여물품'] }}</td>
+                    <td><button class="btn-approve" data-log-index="{{ item['index'] }}">대여 처리</button></td>
+                </tr>
+                {% else %}<tr><td colspan="6">대기 중인 대여 신청이 없습니다.</td></tr>{% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="approve-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+        <span class="modal-close-btn">&times;</span><h2>대여 처리</h2>
+        <p>대여를 처리하는 담당자 이름을 입력해주세요.</p>
+        <form action="{{ url_for('process_approval') }}" method="post">
+            <input type="hidden" name="log_index" id="modal-log-index">
+            <input type="text" name="handler_name" placeholder="대여 담당자 이름" required>
+            <button type="submit" class="submit-btn">대여 수락하기</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block footer %}{% include "components/footer_setting.html" %}{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/modal.js') }}"></script>{% endblock %}

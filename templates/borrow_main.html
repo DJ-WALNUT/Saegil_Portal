@@ -39,7 +39,7 @@
 
     <div class="divider"></div>
 
-    <form action="{{ url_for('borrow_process') }}" method="post" class="borrow-form">
+    <form action="{{ url_for('borrow_request') }}" method="post" class="borrow-form">
         <section class="cart-section">
             <h2>내가 담은 물품</h2>
             <div id="cart-items" class="cart-items-container">
@@ -59,8 +59,6 @@
                     {% endfor %}
                 </select>
                 <input type="tel" name="phone" placeholder="전화번호 (예: 01012341234)" required pattern="[0-9]{11}">
-                <input type="text" name="handler_name" placeholder="대여 담당자" required>
-                <input type="password" name="auth_code" placeholder="인증번호" required pattern="\d{4}">
             </div>
         </section>
         

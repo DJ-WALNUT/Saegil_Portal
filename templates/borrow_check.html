@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}신청/대여 확인 | 새길 포털{% endblock %}
+{% block header %}{% include "components/header_main.html" %}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="check-form-container">
+        <h2>신청/대여 현황 확인</h2>
+        <p>본인의 대여 기록 및 신청 현황을 확인하려면 이름과 학번을 입력해주세요.</p>
+        <form class="check-form" method="post">
+            <input type="text" name="name" placeholder="이름" required value="{{ search_name or '' }}">
+            <input type="text" name="student_id" placeholder="학번" required>
+            <button type="submit" class="submit-btn">확인하기</button>
+        </form>
+    </div>
+
+    {% if user_info %}
+    <div class="user-info-display">
+        <h3>기본 정보</h3>
+        <div class="info-grid">
+            <span><strong>이름 :</strong> {{ user_info.이름 }}</span>
+            <span><strong>학번 :</strong> {{ user_info.학번 }}</span>
+            <span><strong>학과 :</strong> {{ user_info.학과 }}</span>
+            <span><strong>전화번호 :</strong> {{ user_info.전화번호 }}</span>
+        </div>
+    </div>
+    <div class="table-container" style="margin-top: 2rem;">
+        <table style="align-self: center;">
+            <thead><tr><th>대여물품</th><th>신청/대여시각</th><th>대여현황</th><th>반납기한</th></tr></thead>
+            <tbody>
+            {% for record in records %}
+                <tr>
+                    <td>{{ record.대여물품 }}</td>
+                    <td>{{ record.대여시각 }}</td>
+                    <td>{{ record.대여현황 }}</td>
+                    <td>{{ record.반납기한 }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% elif no_records %}
+    <div class="no-records-message">
+        <p>'{{ search_name }}'님의 기록을 찾을 수 없습니다. 이름과 학번을 다시 확인해주세요.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+{% block footer %}{% include "components/footer_main.html" %}{% endblock %}

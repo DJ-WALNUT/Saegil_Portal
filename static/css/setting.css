@@ -32,13 +32,63 @@
     margin-left: 0.5rem;
 }
 
+/* --- 검색 폼 --- */
+.search-form {
+    display: flex;
+    gap: 0.5rem;
+    margin: 1.5rem 0;
+}
+.search-form input {
+    max-width: 500px;
+    flex-grow: 1;
+}
+.search-form button {
+    min-width: 80px;
+    padding: 0 1rem;
+    border: none;
+    background-color: var(--main-navy);
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* --- 페이지 헤더 (제목과 버튼) --- */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid var(--light-gray);
+    margin-bottom: 1rem;
+}
+.page-header h1 {
+    border: none; margin: 0; padding: 0;
+}
+.btn-danger {
+    padding: 0.6rem 1rem;
+    border: none;
+    border-radius: 8px;
+    background-color: var(--danger);
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+}
+.btn-approve {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 6px;
+    background-color: var(--accent-blue);
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+}
+
 /* --- 테이블 --- */
 .table-container {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch; /* 모바일에서 부드러운 스크롤을 위함 */
 }
 table {
-    /*width: 100%;*/
+    width: 100%;
     border-collapse: collapse;
     margin-top: 1.5rem;
 }
@@ -51,7 +101,6 @@ th, td {
 th {
     background-color: #f8f9fa;
     font-weight: 600;
-    text-align: center;
 }
 
 /* --- 관리자 페이지 전용 폼 & 버튼 --- */

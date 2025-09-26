@@ -57,7 +57,7 @@ saegil_portal/
 ### 1\. 프로젝트 복제
 
 ```bash
-git clone https://github.com/your-username/saegil-portal.git
+git clone https://github.com/DJ-WALNUT/saegil-portal.git
 cd saegil-portal
 ```
 

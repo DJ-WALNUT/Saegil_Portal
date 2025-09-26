@@ -114,7 +114,7 @@ python app.py
 ## 📄 라이선스
 
 &copy; 2025 Catholic University of Korea, CUK Engineering Student Council. All Rights Reserved.
-[새길] 홈페이지 제작 TF팀
+<br>[새길] 홈페이지 제작 TF팀
   - 최원서
   - 엄예빈
   - 이준용

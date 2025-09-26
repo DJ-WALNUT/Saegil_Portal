@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/setting.css') }}">
+{% endblock %}
+
+{% block title %}재고 현황 관리 | 새길 포털{% endblock %}
+
+{% block header %}
+    {% include "components/header_setting.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="container setting-container">
+    <h1>재고 현황 관리</h1>
+    <p>물품의 재고를 수정하거나 새로운 물품을 추가할 수 있습니다. 재고를 -1로 설정하면 '확인 중'으로 표시됩니다.</p>
+    
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="flash-message success">{{ messages[0] }}</div>
+        {% endif %}
+    {% endwith %}
+
+    <form method="post" class="stock-update-form">
+        <input type="hidden" name="action" value="update">
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>물품명</th>
+                        <th>재고현황</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                    <tr>
+                        <td>{{ item['물품'] }}</td>
+                        <td><input type="number" name="stock_{{ loop.index0 }}" value="{{ item['재고현황'] }}" class="stock-input"></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <button type="submit" class="submit-btn">전체 재고 저장</button>
+    </form>
+    
+    <div class="divider"></div>
+
+    <h2>신규 물품 추가</h2>
+    <form method="post" class="add-item-form">
+        <input type="hidden" name="action" value="add">
+        <div class="form-grid-add">
+            <input type="text" name="new_item_name" placeholder="새 물품 이름" required>
+            <input type="number" name="new_item_stock" placeholder="초기 재고" required>
+            <button type="submit" class="btn-secondary">물품 추가하기</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block footer %}
+    {% include "components/footer_setting.html" %}
+{% endblock %}

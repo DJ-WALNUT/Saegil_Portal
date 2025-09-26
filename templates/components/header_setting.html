@@ -1,0 +1,17 @@
+<header class="header header-setting">
+    <div class="header-content">
+        <a href="{{ url_for('setting_main') }}" class="logo">
+            새길포털 (관리자)
+        </a>
+        <nav class="main-nav">
+            <ul>
+                <li><a href="{{ url_for('setting_main') }}">대시보드</a></li>
+                <li><a href="{{ url_for('setting_return') }}">반납 현황</a></li>
+                <li><a href="{{ url_for('setting_ongoing') }}">재고 현황</a></li>
+                <li><a href="{{ url_for('setting_log') }}">전체 기록</a></li>
+                <li><a href="{{ url_for('setting_logout') }}">로그아웃</a></li>
+            </ul>
+        </nav>
+        <button class="hamburger-btn">☰</button>
+    </div>
+</header>

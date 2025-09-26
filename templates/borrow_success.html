@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}대여 완료! | 새길 포털{% endblock %}
+
+{% block header %}
+    {% include "components/header_main.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="container success-container">
+    <div class="success-box">
+        <div class="success-icon">✔️</div>
+        <h2>대여 신청이 완료되었습니다!</h2>
+        <p class="date-info">대여일: {{ borrow_date }}</p>
+        <div class="borrowed-list">
+            <p><strong>[대여 물품]</strong></p>
+            <ul>
+                {% for item in items %}
+                <li>- {{ item }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <p class="return-info"><strong>{{ return_date }}</strong>까지 학생회실로 반납 부탁드립니다~</p>
+        <a href="{{ url_for('borrow_main') }}" class="btn-primary">홈으로 돌아가기</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+    {% include "components/footer_main.html" %}
+{% endblock %}

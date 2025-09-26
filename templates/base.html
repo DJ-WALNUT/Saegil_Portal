@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}가톨릭대 공과대학 [새길]{% endblock %}</title>
+  
+  <!-- 일반 메타데이터 -->
+  <title>[새길] 가톨릭대 공과대학</title>
+  <meta name="description" content="[새길] 공과대학 홈페이지 입니다.."/>
+  <meta name="keywords" content="가톨릭대학교, 공과대학, 새길"/>
+  <meta name="author" content="가톨릭대 공과대학, 새길"/>
+
+  <!-- Open Graph (SNS 공유용) -->
+  <meta property="og:title" content="[새길]"/>
+  <meta property="og:description" content="멈추지 않고, 새롭게 나아가, 변화를 [새길]"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:url" content="https://saegil.life/"/>
+  <meta property="og:image" content="{{ url_for('static', filename='files/main/meta/meta_center_image.png') }}"/>
+  <meta property="og:site_name" content="새길 홈페이지"/>
+
+  <!-- Favicon & CSS -->
+  <link rel="icon" href="{{ url_for('static', filename='files/main/favicon/android-chrome-512x512.png') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style_main.css') }}">
+    <style>
+        @font-face {
+            font-family: 'Pretendard';
+            src: url("{{ url_for('static', filename='fonts/Pretendard-Regular.ttf') }}") format('truetype');
+            font-weight: normal;
+        }
+        @font-face {
+            font-family: 'Pretendard';
+            src: url("{{ url_for('static', filename='fonts/Pretendard-SemiBold.ttf') }}") format('truetype');
+            font-weight: 600;
+        }
+    </style>
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <div class="wrapper">
+        {% block header %}{% endblock %}
+        <main class="content">
+            {% block content %}{% endblock %}
+        </main>
+        {% block footer %}{% endblock %}
+    </div> {% block scripts %}{% endblock %}
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

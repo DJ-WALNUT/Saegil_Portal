@@ -1,0 +1,16 @@
+<header class="header">
+    <div class="header-content">
+        <a href="{{ url_for('index') }}" class="logo">
+            <img src="{{ url_for('static', filename='files/img/logo/saegil_logo_circle.png') }}" alt="새길 로고">
+            새길
+        </a>
+        <nav class="main-nav">
+            <ul>
+                <li><a href="{{ url_for('borrow_main') }}">물품대여</a></li>
+                <li><a href="#">학생회 공지</a></li>
+                <li><a href="#">커뮤니티</a></li>
+            </ul>
+        </nav>
+        <button class="hamburger-btn">☰</button>
+    </div>
+</header>

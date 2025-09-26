@@ -1,0 +1,70 @@
+/* --- 메인 페이지 전체 컨테이너 --- */
+.main-page-container {
+    padding: 0; max-width: none; background: none; box-shadow: none; margin: 0;
+}
+
+/* --- 이미지 스크롤 섹션 --- */
+.scroll-section {
+    width: 100%; margin-bottom: 3rem;
+}
+
+.scroll-container {
+    overflow: hidden;
+    width: 100%;
+    cursor: grab;
+    -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+}
+
+.scroll-container.active {
+    cursor: grabbing;
+    cursor: -webkit-grabbing;
+}
+
+.scroll-content {
+    display: flex;
+    width: fit-content;
+}
+
+.scroll-content img {
+    height: 400px;
+    width: auto;
+    object-fit: cover;
+    margin: 0 10px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    transition: transform 0.3s ease;
+    user-select: none;
+    pointer-events: none;
+}
+
+.scroll-content img:hover {
+    transform: scale(1.05);
+}
+
+
+/* --- 바로가기 버튼 섹션 --- */
+.shortcut-section {
+    max-width: 1000px; margin: 0 auto; padding: 2rem; text-align: center;
+}
+.shortcut-section h2 {
+    font-size: 1.8rem; margin-bottom: 2rem;
+}
+.shortcut-container {
+    display: flex; justify-content: center; flex-wrap: wrap; gap: 2rem;
+}
+.shortcut-btn {
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    width: 280px; height: 150px; background-color: var(--white);
+    border-radius: var(--border-radius); box-shadow: var(--box-shadow);
+    text-decoration: none; color: var(--main-navy); transition: all 0.3s ease;
+}
+.shortcut-btn:hover {
+    transform: translateY(-8px); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12); color: var(--accent-blue);
+}
+.shortcut-btn span {
+    font-size: 1.5rem; font-weight: 600;
+}
+.shortcut-btn small {
+    font-size: 0.9rem; color: #888; margin-top: 0.5rem;
+}

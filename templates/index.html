@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}새길 포털 | 공과대학 학생회{% endblock %}
+
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main_page.css') }}">
+{% endblock %}
+
+{% block header %}
+    {% include "components/header_main.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="main-page-container">
+    {% if images %}
+    <section class="scroll-section">
+        <div class="scroll-container">
+            <div class="scroll-content">
+                {% for image in images %}
+                    <img src="{{ url_for('static', filename='files/img/main_scroll/' ~ image) }}" alt="행사 사진">
+                {% endfor %}
+                {% for image in images %}
+                    <img src="{{ url_for('static', filename='files/img/main_scroll/' ~ image) }}" alt="행사 사진">
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
+    <section class="shortcut-section">
+        <h2>바로가기</h2>
+        <div class="shortcut-container">
+            <a href="{{ url_for('borrow_main') }}" class="shortcut-btn">
+                <span>물품 대여하기</span>
+                <small>학생회 비품을 간편하게 빌려요</small>
+            </a>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block footer %}
+    {% include "components/footer_main.html" %}
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/main_page.js') }}"></script>
+{% endblock %}

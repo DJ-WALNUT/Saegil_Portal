@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/setting.css') }}">
+{% endblock %}
+
+{% block title %}관리자 대시보드 | 새길 포털{% endblock %}
+
+{% block header %}
+    {% include "components/header_setting.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="container setting-container">
+    <h1>관리자 대시보드</h1>
+    
+    <div class="dashboard-grid">
+        <div class="dashboard-card">
+            <h3>금일 대여 건수</h3>
+            <p class="stat">{{ today_rentals }}<span>건</span></p>
+        </div>
+    </div>
+
+    <h2>최근 대여 기록 (최대 5건)</h2>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>대여시각</th>
+                    <th>이름</th>
+                    <th>학번</th>
+                    <th>학과</th>
+                    <th>대여물품</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in recent_logs %}
+                <tr>
+                    <td>{{ log['대여시각'] }}</td>
+                    <td>{{ log['이름'] }}</td>
+                    <td>{{ log['학번'] }}</td>
+                    <td>{{ log['학과'] }}</td>
+                    <td>{{ log['대여물품'] }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5">최근 대여 기록이 없습니다.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+    {% include "components/footer_setting.html" %}
+{% endblock %}

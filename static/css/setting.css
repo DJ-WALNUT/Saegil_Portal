@@ -1,0 +1,123 @@
+/* --- 관리자 페이지 전용 레이아웃 --- */
+.setting-container h1 {
+    border-bottom: 2px solid var(--light-gray);
+    padding-bottom: 1rem;
+    margin-bottom: 2rem;
+}
+.footer-setting {
+    background-color: #495057;
+}
+
+/* --- 대시보드 --- */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+.dashboard-card {
+    background-color: #eaf5fc;
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    text-align: center;
+}
+.dashboard-card h3 { color: #2980b9; }
+.dashboard-card .stat {
+    font-size: 3rem;
+    font-weight: 600;
+    color: var(--main-navy);
+}
+.dashboard-card .stat span {
+    font-size: 1.5rem;
+    margin-left: 0.5rem;
+}
+
+/* --- 테이블 --- */
+.table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* 모바일에서 부드러운 스크롤을 위함 */
+}
+table {
+    /*width: 100%;*/
+    border-collapse: collapse;
+    margin-top: 1.5rem;
+}
+th, td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--light-gray);
+    white-space: nowrap; /* 셀 안의 내용(텍스트)이 줄바꿈되지 않도록 하여 테이블이 줄어드는 것을 방지 */
+}
+th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* --- 관리자 페이지 전용 폼 & 버튼 --- */
+.stock-input {
+    padding: 0.5rem;
+    text-align: center;
+}
+.form-grid-add {
+    display: grid;
+    grid-template-columns: 2fr 1fr auto;
+    gap: 1rem;
+    align-items: center;
+}
+.btn-secondary {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    background-color: #27ae60;
+    color: white;
+    cursor: pointer;
+}
+.download-btn {
+    float: none;
+    display: inline-block;
+    margin-bottom: 1.5rem;
+}
+.btn-return {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 6px;
+    background-color: var(--success);
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+/* --- 반납 처리 모달 --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+.modal-content {
+    background-color: white;
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    width: 90%;
+    max-width: 400px;
+    position: relative;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.2);
+}
+.modal-close-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+    font-size: 1.8rem;
+    cursor: pointer;
+    color: #888;
+}
+.modal-content .submit-btn {
+    margin-top: 1rem;
+}

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/setting.css') }}">
+{% endblock %}
+
+{% block title %}관리자 로그인 | 새길 포털{% endblock %}
+
+{% block header %}
+    {% include "components/header_main.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="container login-container">
+    <form class="login-form" method="post">
+        <h2>관리자 로그인 ⚙️</h2>
+        <p>관리자 비밀번호를 입력해주세요.</p>
+        
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="flash-message error">{{ messages[0] }}</div>
+            {% endif %}
+        {% endwith %}
+
+        <input type="password" name="password" placeholder="비밀번호" required>
+        <button type="submit" class="submit-btn">로그인</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block footer %}
+    {% include "components/footer_main.html" %}
+{% endblock %}

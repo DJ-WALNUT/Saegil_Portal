@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}물품 대여하기 | 새길 포털{% endblock %}
+
+{% block header %}
+    {% include "components/header_main.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <section class="item-selection-section">
+        <h2>어떤 물품을 빌리시겠어요? </h2>
+        <p>원하는 물품을 선택해주세요. 품목 당 1개씩 대여할 수 있습니다.</p>
+        
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="flash-message error">{{ messages[0] }}</div>
+            {% endif %}
+        {% endwith %}
+
+        <div class="item-grid">
+            {% for item in items %}
+            {# 재고가 0이면 out-of-stock 클래스를 추가합니다. #}
+            <div class="item-card {% if item['재고현황'] == 0 %}out-of-stock{% endif %}" data-item-name="{{ item['물품'] }}">
+                <div class="item-name">{{ item['물품'] }}</div>
+                
+                {# 재고 상태에 따라 다른 메시지를 표시합니다. #}
+                {% if item['재고현황'] == -1 %}
+                    <div class="item-stock checking">확인 중</div>
+                {% elif item['재고현황'] == 0 %}
+                    <div class="item-stock out-of-stock">재고 없음</div>
+                {% else %}
+                    <div class="item-stock">재고: {{ item['재고현황'] }}개</div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <form action="{{ url_for('borrow_process') }}" method="post" class="borrow-form">
+        <section class="cart-section">
+            <h2>내가 담은 물품</h2>
+            <div id="cart-items" class="cart-items-container">
+                <p class="cart-placeholder">대여할 물품을 선택해주세요.</p>
+            </div>
+        </section>
+
+        <section class="user-info-section">
+            <h2>인적사항을 입력해주세요</h2>
+            <div class="form-grid">
+                <input type="text" name="name" placeholder="이름" required>
+                <input type="text" name="student_id" placeholder="학번 (예: 202512345)" required pattern="\d{9}">
+                <select name="department" required>
+                    <option value="" disabled selected>학과 선택</option>
+                    {% for dept in departments %}
+                    <option value="{{ dept }}">{{ dept }}</option>
+                    {% endfor %}
+                </select>
+                <input type="tel" name="phone" placeholder="전화번호 (예: 01012341234)" required pattern="[0-9]{11}">
+                <input type="text" name="handler_name" placeholder="대여 담당자" required>
+                <input type="password" name="auth_code" placeholder="인증번호" required pattern="\d{4}">
+            </div>
+        </section>
+        
+        <input type="hidden" name="selected_items" id="selected-items-input">
+        <button type="submit" class="submit-btn" id="submit-btn" disabled>대여 신청하기</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block footer %}
+    {% include "components/footer_main.html" %}
+{% endblock %}

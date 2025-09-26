@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/setting.css') }}">
+{% endblock %}
+
+{% block title %}전체 대여 기록 | 새길 포털{% endblock %}
+
+{% block header %}
+    {% include "components/header_setting.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="container setting-container" style="max-width: 1500px;">
+    <h1>전체 대여 기록</h1>
+    <a href="{{ url_for('download_log_file') }}" class="btn-primary download-btn">대여 기록 엑셀 파일 다운로드 💾</a>
+    
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>이름</th>
+                    <th>학번</th>
+                    <th>학과</th>
+                    <th>대여물품</th>
+                    <th>대여담당자</th>
+                    <th>대여시각</th>
+                    <th>반납여부</th>
+                    <th>반납담당자</th>
+                    <th>반납시각</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                <tr>
+                    <td>{{ log['이름'] }}</td>
+                    <td>{{ log['학번'] }}</td>
+                    <td>{{ log['학과'] }}</td>
+                    <td>{{ log['대여물품'] }}</td>
+                    <td>{{ log['대여담당자'] }}</td>
+                    <td>{{ log['대여시각'] }}</td>
+                    <td>{{ log['반납여부'] }}</td>
+                    <td>{{ log['반납담당자'] }}</td>
+                    <td>{{ log['반납시각'] }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="9">대여 기록이 없습니다.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+    {% include "components/footer_setting.html" %}
+{% endblock %}

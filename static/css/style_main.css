@@ -1,0 +1,112 @@
+/* --- 기본 & 변수 설정 --- */
+:root {
+    --main-navy: #001f3f;
+    --light-sky-blue: #A9D0F5;
+    --accent-blue: #3498db;
+    --saegil-blue: #3986c6;
+    --background-color: #f8f9fa;
+    --text-color: #333;
+    --light-gray: #e9ecef;
+    --white: #ffffff;
+    --danger: #e74c3c;
+    --success: #2ecc71;
+    --font-family: 'Pretendard', sans-serif;
+    --border-radius: 12px;
+    --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: var(--font-family); background-color: var(--background-color); color: var(--text-color); line-height: 1.6; }
+.wrapper { display: flex; flex-direction: column; min-height: 100vh; }
+.content { flex: 1; }
+.container { max-width: 1000px; margin: 2rem auto; padding: 2rem; background-color: var(--white); border-radius: var(--border-radius); box-shadow: var(--box-shadow); }
+h1, h2, h3 { color: var(--main-navy); margin-bottom: 1rem; }
+p { margin-bottom: 1rem; }
+a { color: var(--accent-blue); text-decoration: none; transition: color 0.3s; }
+a:hover { color: var(--saegil-blue); }
+.divider { border-top: 1px solid var(--light-gray); margin: 2.5rem 0; }
+
+/* --- 헤더 & 푸터 (공통) --- */
+.header, .footer { padding: 1rem 2rem; background-color: var(--main-navy); color: var(--white); }
+.header-content, .footer-content { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; }
+.logo { display: flex; align-items: center; gap: 0.75rem; font-size: 1.5rem; font-weight: 600; color: var(--white); text-decoration: none; }
+.logo img { height: 32px; width: auto; object-fit: contain; }
+.main-nav ul { list-style: none; display: flex; gap: 1.5rem; }
+.main-nav a { color: var(--white); font-weight: 600; padding: 0.5rem 0; position: relative; }
+.main-nav a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px; background-color: var(--light-sky-blue); transition: width 0.3s ease; }
+.main-nav a:hover::after { width: 100%; }
+.footer { text-align: center; font-size: 0.9rem; background-color: #343a40; }
+
+/* --- 대여 페이지 (사용자) --- */
+.item-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1.5rem; }
+.item-card { background-color: var(--background-color); border: 2px solid var(--light-gray); border-radius: var(--border-radius); padding: 1.5rem; text-align: center; cursor: pointer; transition: all 0.3s ease; }
+.item-card:hover { transform: translateY(-5px); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1); }
+.item-card.selected { border-color: var(--accent-blue); background-color: #eaf5fc; }
+.item-name { font-weight: 600; font-size: 1.1rem; margin-bottom: 0.5rem; }
+.item-stock { font-size: 0.9rem; color: #555; }
+.item-stock.checking { color: #999; font-style: italic; }
+
+/* --- [추가] 재고 없음 스타일 --- */
+.item-card.out-of-stock {
+    background-color: #f1f3f5; /* 비활성화된 느낌을 주는 배경색 */
+    border-color: #dee2e6;
+    cursor: not-allowed;
+    pointer-events: none; /* 클릭 이벤트를 완전히 막습니다. */
+}
+
+/* 재고 없는 카드는 호버 효과 제거 */
+.item-card.out-of-stock:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+/* 재고 없는 카드의 이름도 회색으로 처리 */
+.item-card.out-of-stock .item-name {
+    color: #adb5bd; 
+}
+
+/* "재고 없음" 텍스트 스타일 */
+.item-stock.out-of-stock {
+    color: var(--danger); /* 위험/경고 색상으로 강조 */
+    font-weight: 600;
+}
+
+.cart-items-container { background-color: #f8f9fa; border-radius: var(--border-radius); padding: 1.5rem; min-height: 80px; display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+.cart-placeholder { color: #888; margin: 0; }
+.cart-item-tag { background-color: var(--light-sky-blue); color: var(--main-navy); padding: 0.5rem 1rem; border-radius: 20px; font-weight: 600; }
+
+/* --- 폼 요소 (공통) --- */
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.5rem; }
+input, select { width: 100%; padding: 0.8rem 1rem; border: 1px solid var(--light-gray); border-radius: 8px; font-size: 1rem; }
+input:focus, select:focus { outline: none; border-color: var(--accent-blue); box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2); }
+.submit-btn { width: 100%; padding: 1rem; margin-top: 2rem; border: none; border-radius: 8px; background-color: var(--accent-blue); color: var(--white); font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: background-color 0.3s; }
+.submit-btn:hover { background-color: #2980b9; }
+.submit-btn:disabled { background-color: #bdc3c7; cursor: not-allowed; }
+.btn-primary { display: inline-block; margin-top: 2rem; padding: 0.8rem 2rem; background-color: var(--main-navy); color: white; border-radius: 8px; }
+
+/* --- 기타 페이지 (성공, 로그인) --- */
+.success-container { text-align: center; }
+.success-box { padding: 3rem; }
+.success-icon { font-size: 4rem; margin-bottom: 1rem; }
+.borrowed-list { margin: 2rem 0; text-align: left; display: inline-block; }
+.borrowed-list ul { list-style: none; margin-top: 0.5rem; }
+.return-info { font-size: 1.2rem; font-weight: 600; color: var(--danger); background-color: #fdf2f2; padding: 1rem; border-radius: var(--border-radius); }
+.login-container { max-width: 450px; text-align: center; }
+
+/* --- 공통 컴포넌트 (플래시 메시지, 반응형) --- */
+.flash-message { padding: 1rem; margin-bottom: 1rem; border-radius: 8px; font-weight: 600; }
+.flash-message.error { background-color: #fdeded; color: #c0392b; }
+.flash-message.success { background-color: #e8f8f5; color: #16a085; }
+.hamburger-btn { display: none; font-size: 1.5rem; background: none; border: none; color: white; cursor: pointer; }
+
+@media (max-width: 768px) {
+    .header-content { position: relative; }
+    .main-nav { display: none; position: absolute; top: 100%; right: 0; background-color: var(--main-navy); width: 250px; flex-direction: column; padding: 1rem; box-shadow: -5px 5px 15px rgba(0,0,0,0.2); z-index: 100; }
+    .main-nav.active { display: flex; }
+    .main-nav ul { flex-direction: column; width: 100%; }
+    .main-nav li { width: 100%; }
+    .main-nav a { display: block; padding: 0.8rem; }
+    .hamburger-btn { display: block; }
+    .form-grid { grid-template-columns: 1fr; }
+    .container { padding: 1rem; margin: 1rem; }
+}

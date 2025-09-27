@@ -250,7 +250,7 @@ def setting_log():
     logs = log_df.sort_values(by='대여시각', ascending=False).to_dict('records')
     return render_template('setting_log.html', logs=logs)
 
-# ✨ 신규: 대여 수락 관리 페이지
+# 신규: 대여 수락 관리 페이지
 @app.route('/setting/approve', methods=['GET', 'POST'])
 def setting_approve():
     if not session.get('logged_in'): return redirect(url_for('setting_login'))
@@ -265,7 +265,7 @@ def setting_approve():
     requests = requests_df.sort_values(by='대여시각', ascending=False).reset_index().to_dict('records')
     return render_template('setting_approve.html', items=requests, search_name=search_name)
 
-# ✨ 신규: 대여 수락 처리
+# 신규 대여 수락 처리
 @app.route('/setting/process_approval', methods=['POST'])
 def process_approval():
     if not session.get('logged_in'): return redirect(url_for('setting_login'))
@@ -283,7 +283,9 @@ def process_approval():
         can_borrow = True
         for item_name in items_to_borrow:
             stock_row = stock_df[stock_df['물품'] == item_name]
-            if not stock_row.empty and stock_row.iloc[0]['재고현황'] <= 0:
+            if stock_row.iloc[0]['재고현황'] == -1:
+                continue
+            elif not stock_row.empty and stock_row.iloc[0]['재고현황'] <= 0:
                 flash(f"'{item_name}'의 재고가 부족하여 대여를 수락할 수 없습니다.")
                 can_borrow = False
                 break
@@ -291,8 +293,18 @@ def process_approval():
         if can_borrow:
             # 재고 차감
             for item_name in items_to_borrow:
-                stock_idx = stock_df.index[stock_df['물품'] == item_name].tolist()[0]
-                stock_df.loc[stock_idx, '재고현황'] -= 1
+                current_item_stock_row = stock_df[stock_df['물품'] == item_name]
+
+                # 재고가 -1인 경우, 재고를 차감하지 않고 다음 물품으로 넘어갑니다.
+                if not current_item_stock_row.empty and current_item_stock_row.iloc[0]['재고현황'] == -1:
+                    continue
+                # 재고가 -1이 아닌 경우에만 차감 로직을 실행합니다.
+                stock_idx_list = stock_df.index[stock_df['물품'] == item_name].tolist()
+                if stock_idx_list:
+                    stock_idx = stock_idx_list[0]
+                    stock_df.loc[stock_idx, '재고현황'] -= 1
+
+            # 모든 물품의 재고 계산이 끝난 후, 파일에 한 번만 저장합니다.
             save_stock(stock_df)
 
             # 로그 업데이트
@@ -304,7 +316,7 @@ def process_approval():
         
     return redirect(url_for('setting_approve'))
 
-# ✨ 신규: 대여 신청 초기화
+# 신규: 대여 신청 초기화
 @app.route('/setting/reset_requests', methods=['POST'])
 def reset_requests():
     if not session.get('logged_in'): return redirect(url_for('setting_login'))
@@ -316,7 +328,7 @@ def reset_requests():
     flash('대기 중인 모든 대여 신청을 초기화했습니다.')
     return redirect(url_for('setting_approve'))
 
-# ✨ 수정: 반납 현황 페이지에 검색 기능 추가
+# 수정: 반납 현황 페이지에 검색 기능 추가
 @app.route('/setting/return', methods=['GET', 'POST'])
 def setting_return():
     if not session.get('logged_in'): return redirect(url_for('setting_login'))
@@ -331,7 +343,7 @@ def setting_return():
     unreturned_items = unreturned_df.sort_values(by='대여시각', ascending=False).reset_index().to_dict('records')
     return render_template('setting_return.html', items=unreturned_items, search_name=search_name)
 
-# ✨ 수정: 반납 처리 로직
+# 수정: 반납 처리 로직
 @app.route('/setting/process_return', methods=['POST'])
 def process_return():
     if not session.get('logged_in'): return redirect(url_for('setting_login'))

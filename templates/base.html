@@ -43,7 +43,9 @@
             {% block content %}{% endblock %}
         </main>
         {% block footer %}{% endblock %}
-        {% include 'components/floating_sns.html' %}
+        {% if not request.path.startswith('/setting') %}
+            {% include 'components/floating_sns.html' %}
+        {% endif %}
     </div> {% block scripts %}{% endblock %}
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>

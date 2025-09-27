@@ -44,7 +44,15 @@
                     <td>{{ log['대여물품'] }}</td>
                     <td>{{ log['대여담당자'] }}</td>
                     <td>{{ log['대여시각'] }}</td>
-                    <td>{{ log['대여현황'] }}</td>
+                    <td>
+                        {% if log['대여현황'] == '신청' %}
+                            <span style="color: #e67e22; font-weight: 600;">{{ log['대여현황'] }}</span>
+                        {% elif log['대여현황'] == '미반납' %}
+                            <span style="color: var(--danger); font-weight: 600;">{{ log['대여현황'] }}</span>
+                        {% else %}
+                            {{ log['대여현황'] }}
+                        {% endif %}
+                    </td>
                     <td>{{ log['반납담당자'] }}</td>
                     <td>{{ log['반납시각'] }}</td>
                 </tr>

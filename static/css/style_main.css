@@ -116,6 +116,26 @@ input:focus, select:focus { outline: none; border-color: var(--accent-blue); box
     color: #555;
 }
 
+/* --- 조직도 페이지 --- */
+.org-chart-container {
+    text-align: center; /* 내부 요소들을 가운데 정렬 */
+}
+
+.chart-image-wrapper {
+    margin-top: 2rem;
+    padding: 1rem;
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    display: inline-block; /* 이미지 크기에 맞게 컨테이너 크기 조절 */
+}
+
+.chart-image-wrapper img {
+    max-width: 100%; /* 이미지가 부모 요소를 넘어가지 않도록 함 */
+    height: auto; /* 이미지 비율 유지 */
+    display: block; /* 이미지 아래 불필요한 여백 제거 */
+}
+
 /* --- 테이블 --- */
 .table-container {
     overflow-x: auto;
@@ -153,6 +173,15 @@ th {
 .flash-message.success { background-color: #e8f8f5; color: #16a085; }
 .hamburger-btn { display: none; font-size: 1.5rem; background: none; border: none; color: white; cursor: pointer; }
 
+.floating-sns { position: fixed; right: 20px; bottom: 20px; width: 110px; background: white; border-radius: 16px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); padding: 12px 10px; z-index: 9999; border: 1px solid gray; }
+.floating-sns .sns-header { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 5px; } /* 로고와 타이틀을 나란히 정렬 */
+.floating-sns .fond-logo { width: 30px; height: auto; margin: 0; } /* 로고 이미지 */
+.floating-sns .fond-title { font-size: 14px; font-weight: bold; color: #222; line-height: 1.2; text-align: left; } /* 새길 #SNS 텍스트 */
+.floating-sns .fond-title strong { color: #e0245e; /* hashtag red */ }
+.floating-sns .sns-links { display: flex; flex-direction: column; gap: 2px; } /* SNS 링크들 */
+.floating-sns .sns-item { display: flex;  align-items: center; gap: 8px; text-decoration: none; color: #000; font-size: 13px; }
+.floating-sns .sns-item img { width: 30px; height: 30px; }
+
 @media (max-width: 768px) {
     .header-content { position: relative; }
     .main-nav { display: none; position: absolute; top: 100%; right: 0; background-color: var(--main-navy); width: 250px; flex-direction: column; padding: 1rem; box-shadow: -5px 5px 15px rgba(0,0,0,0.2); z-index: 100; }
@@ -163,4 +192,6 @@ th {
     .hamburger-btn { display: block; }
     .form-grid { grid-template-columns: 1fr; }
     .container { padding: 1rem; margin: 1rem; }
+    .footer-content { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+    .footer-links { align-self: flex-end; }
 }

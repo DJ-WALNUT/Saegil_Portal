@@ -29,13 +29,14 @@
     {% endif %}
 
     <section class="shortcut-section">
+        <div class="catchP">멈추지 않고, 새롭게 나아가, 변화를 새길!</div>
         <h2>바로가기</h2>
         <div class="shortcut-container">
             <a href="{{ url_for('borrow_main') }}" class="shortcut-btn">
                 <span>물품 대여하기</span>
                 <small>학생회 비품을 간편하게 빌려요</small>
             </a>
-            <a href="{{ url_for('borrow_main') }}" class="shortcut-btn">
+            <a href="{{ url_for('check_rental_status') }}" class="shortcut-btn">
                 <span>신청/대여 확인하기</span>
                 <small>신청/대여 기록을 확인하세요</small>
             </a>

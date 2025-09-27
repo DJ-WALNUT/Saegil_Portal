@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}조직도 | 새길 포털{% endblock %}
+
+{% block header %}
+    {% include "components/header_main.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="container org-chart-container">
+    <h1>조직도</h1>
+    <p>멈추지 않고, 새롭게 나아가, 변화를 새길!<br>[새길]의 조직도입니다.</p>
+    <div class="chart-image-wrapper">
+        <img src="{{ url_for('static', filename='files/img/saegil_org_chart.png') }}" alt="새길 조직도">
+    </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+    {% include "components/footer_main.html" %}
+{% endblock %}

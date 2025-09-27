@@ -51,14 +51,14 @@
             <h2>인적사항을 입력해주세요</h2>
             <div class="form-grid">
                 <input type="text" name="name" placeholder="이름" required>
-                <input type="text" name="student_id" placeholder="학번 (예: 202512345)" required pattern="\d{9}">
+                <input type="text" name="student_id" placeholder="학번 (예: 202512345)" required pattern="\d{9}" maxlength="9">
                 <select name="department" required>
                     <option value="" disabled selected>학과 선택</option>
                     {% for dept in departments %}
                     <option value="{{ dept }}">{{ dept }}</option>
                     {% endfor %}
                 </select>
-                <input type="tel" name="phone" placeholder="전화번호 (예: 01012341234)" required pattern="[0-9]{11}">
+                <input type="tel" name="phone" placeholder="전화번호 (예: 01012341234)" required pattern="[0-9]{11}" maxlength="11">
             </div>
         </section>
         

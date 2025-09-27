@@ -115,7 +115,7 @@ def borrow_request():
         '대여물품': ', '.join(selected_items),
         '대여담당자': '',
         '대여시각': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-        '대여현황': '신청', # ✨ 상태를 '신청'으로 저장
+        '대여현황': '신청',
         '반납담당자': '', '반납시각': ''
     }
     new_log_df = pd.concat([log_df, pd.DataFrame([log_entry])], ignore_index=True)
@@ -169,6 +169,10 @@ def check_rental_status():
             
     return render_template('borrow_check.html')
 
+@app.route('/organization')
+def organization_chart():
+    """조직도 페이지를 렌더링합니다."""
+    return render_template('organization.html')
 
 # --- 관리자 페이지 라우트 ---
 

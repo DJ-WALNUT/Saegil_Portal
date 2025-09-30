@@ -96,7 +96,13 @@ def index():
 def borrow_main():
     stock_df = load_stock()
     available_items = stock_df[stock_df['재고현황'] >= -1] # -1, 0, 있음 모두 표시
-    items_by_category = available_items.groupby('카테고리').apply(lambda x: x.to_dict('records')).to_dict()
+    items_by_category = {}
+    for item in available_items.to_dict('records'):
+        category = item['카테고리']
+        if category not in items_by_category:
+            items_by_category[category] = []
+        items_by_category[category].append(item)
+    
     majors = load_majors()
     
     return render_template('borrow_main.html', items_by_category=items_by_category, departments=majors)

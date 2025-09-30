@@ -32,7 +32,15 @@
                 <tr>
                     <td>{{ record.대여물품 }}</td>
                     <td>{{ record.대여시각 }}</td>
-                    <td>{{ record.대여현황 }}</td>
+                    <td>
+                        {% if record['대여현황'] == '신청' %}
+                            <span style="color: #e67e22; font-weight: 600;">{{ record['대여현황'] }}</span>
+                        {% elif record['대여현황'] == '미반납' %}
+                            <span style="color: var(--danger); font-weight: 600;">{{ record['대여현황'] }}</span>
+                        {% else %}
+                            {{ record['대여현황'] }}
+                        {% endif %}
+                    </td>
                     <td>{{ record.반납기한 }}</td>
                 </tr>
             {% endfor %}

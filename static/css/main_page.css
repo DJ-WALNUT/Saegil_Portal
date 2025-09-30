@@ -48,6 +48,23 @@
 .shortcut-btn:hover { transform: translateY(-8px); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12); color: var(--accent-blue); }
 .shortcut-btn span { font-size: 1.5rem; font-weight: 600; }
 .shortcut-btn small { font-size: 0.9rem; color: #888; margin-top: 0.5rem; }
+.shortcut-btn-ex {
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center;
+    width: 180px; 
+    height: 80px; 
+    background-color: var(--white);
+    border-radius: var(--border-radius); 
+    box-shadow: var(--box-shadow);
+    text-decoration: none; 
+    color: var(--main-navy); 
+    transition: all 0.3s ease;
+}
+.shortcut-btn-ex:hover { transform: translateY(-8px); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12); color: var(--accent-blue); }
+.shortcut-btn-ex span { font-size: 1.3rem; font-weight: 600; }
+.shortcut-btn-ex small { font-size: 0.9rem; color: #888; margin-top: 0.5rem; }
 
 .catchP {
     color: var(--main-navy);

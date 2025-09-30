@@ -51,6 +51,7 @@
     border-radius: 8px;
     cursor: pointer;
 }
+.search-form button:hover { background-color: #004080; }
 
 /* --- 페이지 헤더 (제목과 버튼) --- */
 .page-header {
@@ -62,24 +63,6 @@
 }
 .page-header h1 {
     border: none; margin: 0; padding: 0;
-}
-.btn-danger {
-    padding: 0.6rem 1rem;
-    border: none;
-    border-radius: 8px;
-    background-color: var(--danger);
-    color: white;
-    cursor: pointer;
-    font-weight: 600;
-}
-.btn-approve {
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 6px;
-    background-color: var(--accent-blue);
-    color: white;
-    cursor: pointer;
-    font-weight: 600;
 }
 
 /* --- 테이블 --- */
@@ -110,32 +93,23 @@ th {
 }
 .form-grid-add {
     display: grid;
-    grid-template-columns: 2fr 1fr auto;
+    grid-template-columns: 0.7fr 0.7fr 1fr;
     gap: 1rem;
     align-items: center;
 }
-.btn-secondary {
-    padding: 0.8rem 1.5rem;
-    border: none;
-    border-radius: 8px;
-    background-color: #27ae60;
-    color: white;
-    cursor: pointer;
-}
-.download-btn {
-    float: none;
-    display: inline-block;
-    margin-bottom: 1.5rem;
-}
-.btn-return {
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 6px;
-    background-color: var(--success);
-    color: white;
-    cursor: pointer;
-    font-weight: 600;
-}
+.btn-secondary { padding: 0.8rem 1.5rem; border: none; border-radius: 8px; background-color: #27ae60; color: white; cursor: pointer; }
+.download-btn { float: none; display: inline-block; margin-bottom: 1.5rem; }
+.btn-return { padding: 0.5rem 1rem; border: none; border-radius: 6px; background-color: var(--success); color: white; cursor: pointer; font-weight: 600; }
+.btn-return:hover { background-color: #209250; }
+.btn-danger { padding: 0.6rem 1rem; border: none; border-radius: 8px; background-color: var(--danger); color: white; cursor: pointer; font-weight: 600; }
+.btn-approve { padding: 0.5rem 1rem; border: none; border-radius: 6px; background-color: var(--accent-blue); color: white; cursor: pointer; font-weight: 600; }
+.btn-approve:hover { background-color: #2675aa; }
+/* 테이블 내 버튼들을 위한 스타일 */
+.action-buttons { display: flex; gap: 0.5rem; align-items: center; }
+.action-buttons form { margin: 0; }
+/* 삭제 버튼 스타일 */
+.btn-delete { padding: 0.5rem 1rem; border: none; border-radius: 6px; background-color: var(--danger); color: white; cursor: pointer; font-weight: 600; white-space: nowrap; }
+.btn-delete:hover { background-color: #c0392b; }
 
 /* --- 반납 처리 모달 --- */
 .modal-overlay {
@@ -159,14 +133,5 @@ th {
     position: relative;
     box-shadow: 0 5px 25px rgba(0,0,0,0.2);
 }
-.modal-close-btn {
-    position: absolute;
-    top: 1rem;
-    right: 1.5rem;
-    font-size: 1.8rem;
-    cursor: pointer;
-    color: #888;
-}
-.modal-content .submit-btn {
-    margin-top: 1rem;
-}
+.modal-close-btn { position: absolute; top: 1rem; right: 1.5rem; font-size: 1.8rem; cursor: pointer; color: #888; }
+.modal-content .submit-btn { margin-top: 1rem; }

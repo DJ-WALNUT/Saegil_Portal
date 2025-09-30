@@ -25,9 +25,13 @@ ADMIN_PASSWORD = 'saegil0924'
 # --- 헬퍼 함수 (데이터 처리) ---
 def load_stock():
     if not os.path.exists(STOCK_FILE):
-        df = pd.DataFrame({'물품': [], '재고현황': []})
+        df = pd.DataFrame({'물품': [], '재고현황': [], '카테고리': []})
         df.to_excel(STOCK_FILE, index=False)
-    return pd.read_excel(STOCK_FILE)
+    df = pd.read_excel(STOCK_FILE, dtype=str)
+    df.fillna('', inplace=True)
+    df['카테고리'] = df['카테고리'].apply(lambda x: '반납물품' if x.strip() == '' else x)
+    df['재고현황'] = pd.to_numeric(df['재고현황'], errors='coerce').fillna(0).astype(int)
+    return df
 
 def save_stock(df):
     df.to_excel(STOCK_FILE, index=False)
@@ -92,9 +96,10 @@ def index():
 def borrow_main():
     stock_df = load_stock()
     available_items = stock_df[stock_df['재고현황'] >= -1] # -1, 0, 있음 모두 표시
+    items_by_category = available_items.groupby('카테고리').apply(lambda x: x.to_dict('records')).to_dict()
     majors = load_majors()
     
-    return render_template('borrow_main.html', items=available_items.to_dict('records'), departments=majors)
+    return render_template('borrow_main.html', items_by_category=items_by_category, departments=majors)
 
 @app.route('/borrow/request', methods=['POST'])
 def borrow_request():
@@ -209,6 +214,7 @@ def setting_main():
 
     return render_template('setting_main.html', today_rentals=today_rentals, recent_logs=recent_logs)
 
+# 재고관리 페이지
 @app.route('/setting/ongoing', methods=['GET', 'POST'])
 def setting_ongoing():
     if not session.get('logged_in'):
@@ -223,13 +229,19 @@ def setting_ongoing():
                 new_stock = request.form.get(f'stock_{index}')
                 if new_stock is not None and new_stock.strip() != '':
                     stock_df.loc[index, '재고현황'] = int(new_stock)
+                # ✨ 3. 카테고리 업데이트 로직 추가
+                new_category = request.form.get(f'category_{index}')
+                # 값이 존재하면 (빈 문자열도 허용) 업데이트
+                if new_category is not None:
+                    stock_df.loc[index, '카테고리'] = new_category.strip()
         
         elif action == 'add':
             new_item_name = request.form.get('new_item_name').strip()
             new_item_stock = request.form.get('new_item_stock')
+            new_item_category = request.form.get('new_item_category')
             if new_item_name and new_item_stock is not None and new_item_stock.strip() != '':
                 if new_item_name not in stock_df['물품'].values:
-                    new_row = pd.DataFrame([{'물품': new_item_name, '재고현황': int(new_item_stock)}])
+                    new_row = pd.DataFrame([{'물품': new_item_name, '재고현황': int(new_item_stock), '카테고리': new_item_category}])
                     stock_df = pd.concat([stock_df, new_row], ignore_index=True)
                 else:
                     flash(f"'{new_item_name}'은(는) 이미 존재하는 물품입니다.")
@@ -241,6 +253,23 @@ def setting_ongoing():
     stock_df = load_stock()
     return render_template('setting_ongoing.html', items=stock_df.to_dict('records'))
 
+# 개별 재고 품목 삭제
+@app.route('/setting/delete_stock_item', methods=['POST'])
+def delete_stock_item():
+    if not session.get('logged_in'): return redirect(url_for('setting_login'))
+    
+    stock_index = int(request.form.get('stock_index'))
+    stock_df = load_stock()
+    
+    if stock_index < len(stock_df):
+        stock_df.drop(stock_index, inplace=True)
+        stock_df.reset_index(drop=True, inplace=True)
+        save_stock(stock_df)
+        flash('재고 품목이 삭제되었습니다.')
+
+    return redirect(url_for('setting_ongoing'))
+
+# 전체 대여 기록
 @app.route('/setting/log')
 def setting_log():
     if not session.get('logged_in'):
@@ -250,7 +279,7 @@ def setting_log():
     logs = log_df.sort_values(by='대여시각', ascending=False).to_dict('records')
     return render_template('setting_log.html', logs=logs)
 
-# 신규: 대여 수락 관리 페이지
+# 대여 수락 관리 페이지
 @app.route('/setting/approve', methods=['GET', 'POST'])
 def setting_approve():
     if not session.get('logged_in'): return redirect(url_for('setting_login'))
@@ -265,6 +294,36 @@ def setting_approve():
     requests = requests_df.sort_values(by='대여시각', ascending=False).reset_index().to_dict('records')
     return render_template('setting_approve.html', items=requests, search_name=search_name)
 
+# 개별 대여 신청 건 삭제
+@app.route('/setting/delete_request', methods=['POST'])
+def delete_request():
+    if not session.get('logged_in'): return redirect(url_for('setting_login'))
+    
+    log_index = int(request.form.get('log_index'))
+    log_df = load_log()
+    
+    if log_index < len(log_df):
+        # 'index'를 기준으로 해당 행을 삭제
+        log_df.drop(log_index, inplace=True)
+        # 인덱스를 재정렬
+        log_df.reset_index(drop=True, inplace=True)
+        save_log(log_df)
+        flash('대여 신청 건이 삭제되었습니다.')
+        
+    return redirect(url_for('setting_approve'))
+
+# 대여 신청 초기화
+@app.route('/setting/reset_requests', methods=['POST'])
+def reset_requests():
+    if not session.get('logged_in'): return redirect(url_for('setting_login'))
+    
+    log_df = load_log()
+    # '신청' 상태가 아닌 기록만 남김
+    remaining_logs = log_df[log_df['대여현황'] != '신청']
+    save_log(remaining_logs)
+    flash('대기 중인 모든 대여 신청을 초기화했습니다.')
+    return redirect(url_for('setting_approve'))
+
 # 신규 대여 수락 처리
 @app.route('/setting/process_approval', methods=['POST'])
 def process_approval():
@@ -275,57 +334,47 @@ def process_approval():
 
     log_df = load_log()
     stock_df = load_stock()
-
     if log_index < len(log_df) and handler_name:
         items_to_borrow = log_df.loc[log_index, '대여물품'].split(', ')
-        
-        # 재고 확인
         can_borrow = True
+        is_disposable_only = True # ✨ 일회용품만 대여했는지 확인하는 플래그
         for item_name in items_to_borrow:
             stock_row = stock_df[stock_df['물품'] == item_name]
-            if stock_row.iloc[0]['재고현황'] == -1:
-                continue
-            elif not stock_row.empty and stock_row.iloc[0]['재고현황'] <= 0:
-                flash(f"'{item_name}'의 재고가 부족하여 대여를 수락할 수 없습니다.")
+            if not stock_row.empty:
+                if stock_row.iloc[0]['카테고리'] != '일회용품':
+                    is_disposable_only = False
+                if stock_row.iloc[0]['재고현황'] == -1:
+                    continue
+                elif stock_row.iloc[0]['재고현황'] <= 0:
+                    flash(f"'{item_name}'의 재고가 부족하여 대여를 수락할 수 없습니다.")
+                    can_borrow = False
+                    break
+            else:
+                flash(f"'{item_name}'을(를) 재고 목록에서 찾을 수 없습니다.")
                 can_borrow = False
                 break
-        
         if can_borrow:
-            # 재고 차감
             for item_name in items_to_borrow:
                 current_item_stock_row = stock_df[stock_df['물품'] == item_name]
-
-                # 재고가 -1인 경우, 재고를 차감하지 않고 다음 물품으로 넘어갑니다.
-                if not current_item_stock_row.empty and current_item_stock_row.iloc[0]['재고현황'] == -1:
-                    continue
-                # 재고가 -1이 아닌 경우에만 차감 로직을 실행합니다.
-                stock_idx_list = stock_df.index[stock_df['물품'] == item_name].tolist()
-                if stock_idx_list:
-                    stock_idx = stock_idx_list[0]
-                    stock_df.loc[stock_idx, '재고현황'] -= 1
-
-            # 모든 물품의 재고 계산이 끝난 후, 파일에 한 번만 저장합니다.
+                if not current_item_stock_row.empty:
+                    if current_item_stock_row.iloc[0]['재고현황'] == -1:
+                        continue
+                    stock_idx_list = stock_df.index[stock_df['물품'] == item_name].tolist()
+                    if stock_idx_list:
+                        stock_idx = stock_idx_list[0]
+                        stock_df.loc[stock_idx, '재고현황'] -= 1
             save_stock(stock_df)
 
-            # 로그 업데이트
-            log_df.loc[log_index, '대여현황'] = '미반납'
+            if is_disposable_only:
+                log_df.loc[log_index, '대여현황'] = '사용' # ✨ 일회용품은 바로 반납 처리
+                flash('일회용품 대여가 완료되었습니다.')
+            else:
+                log_df.loc[log_index, '대여현황'] = '미반납'
+                flash('대여 신청을 수락했습니다.')
+
             log_df.loc[log_index, '대여담당자'] = handler_name
             log_df.loc[log_index, '대여시각'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             save_log(log_df)
-            flash('대여 신청을 수락했습니다.')
-        
-    return redirect(url_for('setting_approve'))
-
-# 신규: 대여 신청 초기화
-@app.route('/setting/reset_requests', methods=['POST'])
-def reset_requests():
-    if not session.get('logged_in'): return redirect(url_for('setting_login'))
-    
-    log_df = load_log()
-    # '신청' 상태가 아닌 기록만 남김
-    remaining_logs = log_df[log_df['대여현황'] != '신청']
-    save_log(remaining_logs)
-    flash('대기 중인 모든 대여 신청을 초기화했습니다.')
     return redirect(url_for('setting_approve'))
 
 # 수정: 반납 현황 페이지에 검색 기능 추가

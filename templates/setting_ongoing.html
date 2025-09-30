@@ -31,6 +31,8 @@
                     <tr>
                         <th>물품명</th>
                         <th style="text-align: center;">재고현황</th>
+                        <th style="text-align: center;">카테고리</th>
+                        <th>삭제</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -38,6 +40,13 @@
                     <tr>
                         <td>{{ item['물품'] }}</td>
                         <td><input type="number" name="stock_{{ loop.index0 }}" value="{{ item['재고현황'] }}" class="stock-input"></td>
+                        <td><input type="text" name="category_{{ loop.index0 }}" value="{{ item['카테고리'] or '' }}" class="stock-input"></td>
+                        <td class="action-buttons">
+                            <form action="{{ url_for('delete_stock_item') }}" method="post" onsubmit="return confirm('\'{{ item['물품'] }}\' 품목을 정말로 삭제하시겠습니까?');">
+                                <input type="hidden" name="stock_index" value="{{ loop.index0 }}">
+                                <button type="submit" class="btn-delete">삭제</button>
+                            </form>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -54,8 +63,9 @@
         <div class="form-grid-add">
             <input type="text" name="new_item_name" placeholder="새 물품 이름" required>
             <input type="number" name="new_item_stock" placeholder="초기 재고" required>
-            <button type="submit" class="btn-secondary">물품 추가하기</button>
+            <input type="text" name="new_item_category" placeholder="카테고리 (공백 시 반납물품)" >
         </div>
+        <button type="submit" class="submit-btn" style="background-color: #27ae60;">물품 추가하기</button>
     </form>
 </div>
 {% endblock %}

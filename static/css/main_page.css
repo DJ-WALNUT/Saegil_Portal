@@ -36,8 +36,8 @@
     flex-direction: column; 
     justify-content: center; 
     align-items: center;
-    width: 250px; 
-    height: 120px; 
+    width: 230px; 
+    height: 110px; 
     background-color: var(--white);
     border-radius: var(--border-radius); 
     box-shadow: var(--box-shadow);
@@ -53,8 +53,8 @@
     flex-direction: column; 
     justify-content: center; 
     align-items: center;
-    width: 180px; 
-    height: 80px; 
+    width: 155px; 
+    height: 70px; 
     background-color: var(--white);
     border-radius: var(--border-radius); 
     box-shadow: var(--box-shadow);
@@ -63,7 +63,7 @@
     transition: all 0.3s ease;
 }
 .shortcut-btn-ex:hover { transform: translateY(-8px); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12); color: var(--accent-blue); }
-.shortcut-btn-ex span { font-size: 1.3rem; font-weight: 600; }
+.shortcut-btn-ex span { font-size: 1.2rem; font-weight: 600; }
 .shortcut-btn-ex small { font-size: 0.9rem; color: #888; margin-top: 0.5rem; }
 
 .catchP {
@@ -73,4 +73,10 @@
     text-align: center;
     margin-bottom: 2rem;
     word-break: keep-all; /* 단어 단위로 줄바꿈을 유지하여 어색함을 방지 */
+}
+
+@media (max-width: 768px) {
+    .shortcut-btn { width: 155px; height: 70px; }
+    .shortcut-btn span { font-size: 1.3rem; }
+    .shortcut-btn small { font-size: 0.7rem; margin-top: 0.1rem; }
 }

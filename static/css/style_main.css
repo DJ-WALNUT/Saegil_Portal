@@ -113,10 +113,10 @@ th { background-color: #f8f9fa; font-weight: 600; }
 .flash-message.success { background-color: #e8f8f5; color: #16a085; }
 .hamburger-btn { display: none; font-size: 1.5rem; background: none; border: none; color: white; cursor: pointer; }
 
-.floating-sns { position: fixed; right: 20px; bottom: 20px; width: 110px; background: white; border-radius: 16px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); padding: 12px 10px; z-index: 9999; border: 1px solid gray; }
+.floating-sns { position: fixed; right: 5px; bottom: 5px; width: 110px; background: white; border-radius: 16px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); padding: 12px 10px; z-index: 9999; border: 1px solid gray; }
 .floating-sns .sns-header { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 5px; } /* 로고와 타이틀을 나란히 정렬 */
 .floating-sns .fond-logo { width: 30px; height: auto; margin: 0; } /* 로고 이미지 */
-.floating-sns .fond-title { font-size: 14px; font-weight: bold; color: #222; line-height: 1.2; text-align: left; } /* 새길 #SNS 텍스트 */
+.floating-sns .fond-title { font-size: 12px; font-weight: bold; color: #222; line-height: 1.2; text-align: left; } /* 새길 #SNS 텍스트 */
 .floating-sns .fond-title strong { color: #e0245e; /* hashtag red */ }
 .floating-sns .sns-links { display: flex; flex-direction: column; gap: 2px; } /* SNS 링크들 */
 .floating-sns .sns-item { display: flex;  align-items: center; gap: 8px; text-decoration: none; color: #000; font-size: 13px; }
@@ -133,4 +133,7 @@ th { background-color: #f8f9fa; font-weight: 600; }
     .form-grid { grid-template-columns: 1fr; }
     .container { padding: 1rem; margin: 1rem; }
     .footer-content { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+    /*물품 스타일*/
+    .item-name { font-size: 1rem; }
+    .item-stock { font-size: 0.8rem; }
 }

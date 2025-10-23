@@ -2,6 +2,12 @@
 
 **새길 포털**은 대학교 공과대학 학생회를 위한 간단한 물품 대여 웹 서비스입니다. 기존의 수기 장부 방식을 대체하여 재고 관리의 효율성을 높이고, 학생들의 대여 과정을 간소화하기 위해 개발되었습니다.
 
+[![Python](https://img.shields.io/badge/Python-3.13.7-blue?style=flat-square&logo=python)](https://www.python.org/)
+[![Flask](https://img.shields.io/badge/Flask-3.1.2-black?style=flat-square&logo=flask)](https://flask.palletsprojects.com/)
+[![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat-square&logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/HTML)
+[![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=flat-square&logo=css3&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/CSS)
+[![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+
 <br>
 
 ## ✨ 주요 기능
